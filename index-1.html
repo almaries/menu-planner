@@ -1,191 +1,797 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#151515">
-<title>Меню — умный планировщик</title>
-<style>
-:root{--bg:#f5f3ef;--card:#fff;--text:#171717;--muted:#77716b;--line:#e6e1da;--accent:#171717;--soft:#eeebe5;--ok:#2d7450;--bad:#a03b35}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.app{max-width:900px;margin:auto;padding:18px 14px 80px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.logo{font-size:29px;font-weight:900;letter-spacing:-1px}.dot{opacity:.45}.tag{font-size:12px;color:var(--muted)}.eyebrow{font-size:11px;font-weight:900;letter-spacing:.12em;color:#8b837a;margin-bottom:7px}.tiny{font-size:11px;color:var(--muted);text-align:center;margin-top:9px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px;margin:12px 0;box-shadow:0 8px 30px #00000007}
-h1,h2,h3{margin:0 0 12px;letter-spacing:-.3px}h1{font-size:26px}h2{font-size:20px}h3{font-size:16px}
-.muted{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-label{display:block;font-weight:700;font-size:13px;margin:11px 0 6px}input,select,textarea{width:100%;padding:12px;border:1px solid #d8d2ca;border-radius:13px;background:#fff;font:inherit;outline:none}input:focus,select:focus,textarea:focus{border-color:#777}
-.chips{display:flex;flex-wrap:wrap;gap:7px}.chip{display:inline-flex;align-items:center;gap:6px;background:var(--soft);padding:9px 11px;border-radius:999px;cursor:pointer}.chip input{width:auto}
-button{width:100%;border:0;border-radius:15px;padding:14px 15px;background:var(--accent);color:#fff;font:inherit;font-weight:850;cursor:pointer;margin-top:14px;transition:transform .12s ease,opacity .12s ease}button:active{transform:scale(.985);opacity:.9}.secondary{background:var(--soft);color:var(--text)}.danger{background:#f4e7e5;color:#8b2e2a}
-.hidden{display:none}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.stat{background:var(--soft);padding:12px;border-radius:15px}.stat strong{display:block;font-size:18px}.stat span{font-size:12px;color:var(--muted)}
-.tabs{display:flex;gap:7px;overflow:auto;margin:12px 0}.tab{white-space:nowrap;border:1px solid var(--line);background:#fff;color:var(--text);padding:9px 12px;border-radius:999px;width:auto;margin:0}.tab.active{background:var(--accent);color:#fff}
-.day{border-top:1px solid var(--line);padding:17px 0}.day:first-child{border-top:0}.daytop{display:flex;justify-content:space-between;gap:10px}.meal{padding:10px 0}.meal-title{font-weight:800}.meal-meta{font-size:12px;color:var(--muted)}.price{font-weight:850}.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.mini{width:auto;margin:0;padding:8px 10px;font-size:12px}
-.item{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}.item:last-child{border-bottom:0}.item small{display:block;color:var(--muted)}
-.notice{padding:12px;border-radius:14px;background:#f1eee8;margin-top:12px}.ok{color:var(--ok)}.bad{color:var(--bad)}
-details{border-top:1px solid var(--line);padding:12px 0}summary{font-weight:800;cursor:pointer}
-footer{text-align:center;color:#aaa;font-size:11px;margin-top:25px}
-@media(max-width:650px){.grid,.grid3{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.app{padding-top:10px}}
-@media print{body{background:white}.card{box-shadow:none;border:0}.top,.tabs,#setup,button,footer,.eyebrow{display:none!important}.hidden{display:block!important}.app{max-width:none}.day{break-inside:avoid}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Menu Planner</title>
+  <style>
+    :root {
+      --bg: #0e1117;
+      --card-bg: #161b22;
+      --card-border: #30363d;
+      --text: #f0f6fc;
+      --text-muted: #8b949e;
+      --accent: #238636;
+      --accent-hover: #2ea043;
+      --accent-soft: rgba(35, 134, 54, 0.15);
+      --danger: #da3633;
+      --danger-soft: rgba(218, 54, 51, 0.15);
+      --tag-bg: #21262d;
+      --tag-border: #363b42;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+      padding-bottom: 50px;
+    }
+
+    .container {
+      max-width: 620px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 22px;
+      padding-top: 8px;
+    }
+
+    h1 {
+      font-size: 1.55rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    input[type="number"], select {
+      width: 100%;
+      background: var(--tag-bg);
+      border: 1px solid var(--tag-border);
+      border-radius: 8px;
+      padding: 11px 12px;
+      color: var(--text);
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--accent);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .chip-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .chip {
+      background: var(--tag-bg);
+      border: 1px solid var(--tag-border);
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s ease;
+      color: var(--text-muted);
+    }
+
+    .chip.active {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: #7ee787;
+      font-weight: 500;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 13px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.15s, opacity 0.15s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+      margin-top: 8px;
+    }
+
+    .btn-primary:active {
+      background: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background: var(--tag-bg);
+      color: var(--text);
+      border: 1px solid var(--tag-border);
+      padding: 6px 12px;
+      font-size: 0.78rem;
+      width: auto;
+      border-radius: 6px;
+    }
+
+    .btn-secondary:active {
+      background: var(--card-border);
+    }
+
+    .badge {
+      background: var(--tag-bg);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      border: 1px solid var(--tag-border);
+    }
+
+    .badge-accent {
+      background: var(--accent-soft);
+      color: #7ee787;
+      border-color: var(--accent);
+    }
+
+    .badge-warn {
+      background: var(--danger-soft);
+      color: #ff7b72;
+      border-color: var(--danger);
+    }
+
+    .day-card {
+      margin-bottom: 14px;
+      border-left: 3px solid var(--accent);
+    }
+
+    .day-header {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+      color: var(--text-muted);
+    }
+
+    .meal-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 9px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      gap: 10px;
+    }
+
+    .meal-item:last-child {
+      border-bottom: none;
+    }
+
+    .meal-info {
+      flex: 1;
+    }
+
+    .meal-type {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+      font-weight: 600;
+    }
+
+    .meal-title {
+      font-size: 0.92rem;
+      font-weight: 500;
+    }
+
+    .prep-box {
+      background: rgba(35, 134, 54, 0.08);
+      border: 1px dashed var(--accent);
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 16px;
+      font-size: 0.85rem;
+    }
+
+    .prep-box strong {
+      color: #7ee787;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .prep-box ul {
+      padding-left: 20px;
+    }
+
+    .prep-box li {
+      margin-bottom: 4px;
+      color: #d2a8ff;
+    }
+
+    .prep-box li span {
+      color: var(--text);
+    }
+
+    .shop-category {
+      margin-bottom: 14px;
+    }
+
+    .shop-category:last-child {
+      margin-bottom: 0;
+    }
+
+    .shop-category-title {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .shop-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      border-radius: 6px;
+      user-select: none;
+    }
+
+    .shop-item:active {
+      background: var(--tag-bg);
+    }
+
+    .shop-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .shop-item.checked span {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .banner-warning {
+      background: var(--danger-soft);
+      border: 1px solid var(--danger);
+      color: #ff7b72;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
 </head>
 <body>
-<div class="app">
-  <header class="top"><div><div class="logo">Меню<span class="dot">.</span></div><div class="tag">планировщик еды и бюджета</div></div><button class="secondary mini" onclick="resetApp()">Сбросить</button></header>
 
-  <section class="card" id="setup">
-    <div class="eyebrow">ШАГ 1 · ПАРАМЕТРЫ</div>
-    <h1>Соберём меню под тебя</h1>
-    <div class="muted">Скажи бюджету, продуктам и твоему режиму, что делать — остальное соберёт планировщик.</div>
-    <div class="grid">
-      <div><label>Людей</label><input id="people" type="number" min="1" max="12" value="1"></div>
-      <div><label>Дней</label><input id="days" type="number" min="1" max="7" value="7"></div>
-      <div><label>Бюджет на всё, ₽</label><input id="budget" type="number" min="0" value="3500"></div>
-      <div><label>Магазин</label><select id="store"><option>Пятёрочка</option><option>Магнит</option><option>Дикси</option><option>Лента</option><option>Другой</option></select></div>
+<div class="container">
+  <header>
+    <h1>Menu Planner</h1>
+    <div class="subtitle">Рациональное меню, список покупок и заготовки на неделю</div>
+  </header>
+
+  <!-- Форма параметров -->
+  <div class="card" id="config-card">
+    <div class="card-title">Параметры плана</div>
+    
+    <div class="grid-2 form-group">
+      <div>
+        <label>Количество персон</label>
+        <input type="number" id="people-count" min="1" max="8" value="2">
+      </div>
+      <div>
+        <label>Количество дней</label>
+        <input type="number" id="days-count" min="1" max="7" value="7">
+      </div>
     </div>
 
-    <label>Приёмы пищи</label>
-    <div class="chips">
-      <label class="chip"><input class="mealtype" type="checkbox" value="breakfast" checked> Завтрак</label>
-      <label class="chip"><input class="mealtype" type="checkbox" value="lunch" checked> Обед</label>
-      <label class="chip"><input class="mealtype" type="checkbox" value="dinner" checked> Ужин</label>
+    <div class="grid-2 form-group">
+      <div>
+        <label>Лимит бюджета (₽)</label>
+        <input type="number" id="budget-input" min="500" step="100" value="4800">
+      </div>
+      <div>
+        <label>Формат питания</label>
+        <select id="meals-count">
+          <option value="2">2 приёма (Обед + Ужин)</option>
+          <option value="3" selected>3 приёма (Завтрак + Обед + Ужин)</option>
+        </select>
+      </div>
     </div>
 
-    <div class="grid">
-      <div><label>Нелюбимые продукты</label><textarea id="avoid" rows="3" placeholder="грибы, овсянка, свинина"></textarea></div>
-      <div><label>Аллергии / строгие исключения</label><textarea id="allergy" rows="3" placeholder="арахис, молоко"></textarea></div>
+    <div class="form-group">
+      <label>Уже есть дома (не включать в покупку):</label>
+      <div class="chip-container" id="pantry-chips">
+        <div class="chip" data-id="rice">Рис</div>
+        <div class="chip" data-id="buckwheat">Гречка</div>
+        <div class="chip" data-id="pasta">Макароны</div>
+        <div class="chip" data-id="oats">Овсянка</div>
+        <div class="chip" data-id="eggs">Яйца</div>
+        <div class="chip" data-id="oil">Растительное масло</div>
+        <div class="chip" data-id="onion">Лук</div>
+        <div class="chip" data-id="carrots">Морковь</div>
+        <div class="chip" data-id="soy_sauce">Соевый соус</div>
+        <div class="chip" data-id="tomato_paste">Томатная паста</div>
+      </div>
     </div>
-    <label>Что любишь</label><textarea id="likes" rows="2" placeholder="курица, рыба, рис, простые блюда"></textarea>
 
-    <label>Что уже есть дома</label><textarea id="home" rows="2" placeholder="яйца 6 шт, рис 500 г, морковь 2 шт"></textarea>
-
-    <div class="grid">
-      <div><label>Готовка</label><select id="cook"><option value="daily">Могу готовить каждый день</option><option value="few">Хочу готовить 2–3 раза в неделю</option><option value="batch">Хочу готовить большими партиями</option></select></div>
-      <div><label>Приоритет</label><select id="priority"><option value="budget">Минимальная цена</option><option value="balance">Баланс цены и разнообразия</option><option value="protein">Больше белка</option></select></div>
+    <div class="form-group">
+      <label>Исключить категории и продукты:</label>
+      <div class="chip-container" id="exclude-chips">
+        <div class="chip" data-id="pork">Свинина</div>
+        <div class="chip" data-id="fish">Рыба / Тунец</div>
+        <div class="chip" data-id="dairy">Молочные продукты</div>
+        <div class="chip" data-id="mushrooms">Грибы</div>
+      </div>
     </div>
-    <button onclick="generate()">Составить моё меню <span aria-hidden="true">→</span></button>
-    <div class="tiny">Данные сохраняются только в этом браузере. Реальные цены магазинов подключим следующим этапом.</div>
-  </section>
 
-  <section class="card hidden" id="result">
-    <div class="eyebrow">ШАГ 2 · ГОТОВЫЙ ПЛАН</div>
-    <div class="row"><div><h2>Твоя неделя</h2><div class="muted" id="resultSub"></div></div><button class="secondary mini" onclick="window.print()">PDF</button></div>
-    <div class="stats" id="stats"></div>
-    <div class="tabs" id="tabs"></div>
-    <div id="menu"></div>
-  </section>
+    <button class="btn btn-primary" id="btn-generate">Сгенерировать рацион</button>
+  </div>
 
-  <section class="card hidden" id="shopping">
-    <div class="eyebrow">ШАГ 3 · ПОКУПКИ</div>
-    <h2>Список покупок</h2>
-    <div class="muted" id="shoppingHint"></div>
-    <div id="shop"></div>
-  </section>
+  <!-- Предупреждение о лимите бюджета -->
+  <div id="budget-warning" class="banner-warning hidden">
+    Внимание: итоговая корзина превышает указанный бюджет. Вы можете отметить имеющиеся базовые продукты дома или скорректировать лимит.
+  </div>
 
-  <section class="card hidden" id="batch">
-    <div class="eyebrow">ШАГ 4 · ЗАГОТОВКИ</div>
-    <h2>Как меньше готовить</h2>
-    <div id="batchText"></div>
-  </section>
+  <!-- Результаты -->
+  <div id="result-area" class="hidden">
+    
+    <!-- Смета -->
+    <div class="card">
+      <div class="card-title">
+        <span>Бюджет и смета</span>
+        <button class="btn btn-secondary" id="btn-reset-plan">Сбросить всё</button>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+        <div>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">Стоимость продуктовой корзины:</span>
+          <div id="total-cost" style="font-size: 1.4rem; font-weight: 700; color: #7ee787;">0 ₽</div>
+        </div>
+        <div>
+          <span id="budget-badge" class="badge badge-accent">В рамках бюджета</span>
+        </div>
+      </div>
+    </div>
 
-  <footer>Версия 1.0 · цены в этой версии демонстрационные · персональные данные никуда не отправляются</footer>
+    <!-- Заготовки -->
+    <div class="prep-box" id="prep-block">
+      <strong>Рекомендуемые заготовки (1 час в воскресенье):</strong>
+      <ul id="prep-list"></ul>
+    </div>
+
+    <!-- Список дней с блюдами -->
+    <div id="days-container"></div>
+
+    <!-- Список покупок -->
+    <div class="card">
+      <div class="card-title">
+        <span>Список покупок</span>
+        <span id="shop-progress" class="badge">0/0</span>
+      </div>
+      <div id="shopping-list-container"></div>
+    </div>
+
+  </div>
 </div>
 
 <script>
-const RECIPES=[
-{name:"Омлет с овощами",type:"breakfast",price:95,kcal:360,p:22,prep:10,items:{яйца:[2,"шт"],молоко:[100,"мл"],перец:[100,"г"],лук:[30,"г"]}},
-{name:"Творог с бананом",type:"breakfast",price:110,kcal:330,p:27,prep:5,items:{творог:[180,"г"],банан:[1,"шт"]}},
-{name:"Тост с яйцом и авокадо",type:"breakfast",price:125,kcal:410,p:18,prep:8,items:{хлеб:[2,"ломтика"],яйца:[2,"шт"],авокадо:[0.5,"шт"]}},
-{name:"Курица с рисом и овощами",type:"lunch",price:185,kcal:560,p:43,prep:30,items:{куриное_филе:[180,"г"],рис:[80,"г"],морковь:[70,"г"],лук:[30,"г"]}},
-{name:"Рыба с картофелем",type:"lunch",price:205,kcal:520,p:39,prep:30,items:{рыба:[200,"г"],картофель:[250,"г"],морковь:[50,"г"]}},
-{name:"Гречка с куриными котлетами",type:"lunch",price:175,kcal:540,p:41,prep:35,items:{куриный_фарш:[180,"г"],гречка:[80,"г"],лук:[40,"г"]}},
-{name:"Суп с курицей и овощами",type:"dinner",price:145,kcal:390,p:32,prep:40,items:{куриное_филе:[120,"г"],картофель:[150,"г"],морковь:[60,"г"],лук:[40,"г"]}},
-{name:"Тушёные овощи с яйцом",type:"dinner",price:120,kcal:350,p:20,prep:20,items:{яйца:[2,"шт"],кабачок:[180,"г"],морковь:[60,"г"],лук:[40,"г"]}},
-{name:"Паста с тунцом",type:"dinner",price:175,kcal:500,p:33,prep:20,items:{паста:[90,"г"],тунец:[100,"г"],томат:[100,"г"]}},
-{name:"Рис с тунцом и огурцом",type:"dinner",price:165,kcal:460,p:34,prep:15,items:{рис:[80,"г"],тунец:[100,"г"],огурец:[100,"г"]}}
-];
-const LABEL={breakfast:"Завтрак",lunch:"Обед",dinner:"Ужин"};
-let state=null;
+const INGREDIENTS = {
+  eggs: { name: "Яйца", cat: "dairy", packQty: 10, unit: "шт", price: 130 },
+  oats: { name: "Овсяные хлопья", cat: "grocery", packQty: 400, unit: "г", price: 85 },
+  milk: { name: "Молоко", cat: "dairy", packQty: 1, unit: "л", price: 90 },
+  banana: { name: "Бананы", cat: "produce", packQty: 1, unit: "кг", price: 140 },
+  cottage_cheese: { name: "Творог 5%", cat: "dairy", packQty: 400, unit: "г", price: 160 },
+  cheese: { name: "Сыр полутвердый", cat: "dairy", packQty: 200, unit: "г", price: 190 },
+  chicken_fillet: { name: "Куриное филе", cat: "meat", packQty: 800, unit: "г", price: 380 },
+  minced_meat: { name: "Фарш говяжий/домашний", cat: "meat", packQty: 500, unit: "г", price: 290 },
+  tuna_canned: { name: "Тунец консервированный", cat: "fish", packQty: 1, unit: "бан.", price: 150 },
+  rice: { name: "Рис круглозерный", cat: "grocery", packQty: 800, unit: "г", price: 110 },
+  buckwheat: { name: "Гречневая крупа", cat: "grocery", packQty: 800, unit: "г", price: 95 },
+  pasta: { name: "Макароны твердых сортов", cat: "grocery", packQty: 450, unit: "г", price: 85 },
+  tomato_paste: { name: "Томаты протертые / паста", cat: "grocery", packQty: 400, unit: "г", price: 115 },
+  cucumber: { name: "Огурцы", cat: "produce", packQty: 600, unit: "г", price: 130 },
+  tomatoes: { name: "Помидоры", cat: "produce", packQty: 600, unit: "г", price: 160 },
+  carrots: { name: "Морковь", cat: "produce", packQty: 1, unit: "кг", price: 45 },
+  onion: { name: "Лук репчатый", cat: "produce", packQty: 1, unit: "кг", price: 40 },
+  greens: { name: "Свежая зелень", cat: "produce", packQty: 1, unit: "уп", price: 70 },
+  bread: { name: "Хлеб цельнозерновой", cat: "grocery", packQty: 1, unit: "шт", price: 55 },
+  mushrooms: { name: "Шампиньоны свежие", cat: "mushrooms", packQty: 400, unit: "г", price: 140 },
+  oil: { name: "Масло растительное", cat: "grocery", packQty: 1, unit: "бут.", price: 120 },
+  soy_sauce: { name: "Соевый соус", cat: "grocery", packQty: 1, unit: "бут.", price: 110 }
+};
 
-function list(s){return (s||"").toLowerCase().split(/[,;\n]+/).map(x=>x.trim()).filter(Boolean)}
-function blocked(r,bad){
- const hay=(r.name+" "+Object.keys(r.items).join(" ")).toLowerCase();
- return bad.some(x=>x && hay.includes(x));
+const CATEGORY_NAMES = {
+  meat: "Мясо и птица",
+  fish: "Рыба и морепродукты",
+  produce: "Овощи, фрукты и зелень",
+  dairy: "Молочные продукты и яйца",
+  mushrooms: "Грибы",
+  grocery: "Бакалея и крупы"
+};
+
+const DISHES = [
+  { id: "b1", name: "Овсяная каша на молоке с бананом", type: "breakfast", ingredients: { oats: 50, milk: 0.15, banana: 0.5 }, prepTip: "Отмерить порции овсянки по контейнерам." },
+  { id: "b2", name: "Омлет с сыром и томатами", type: "breakfast", ingredients: { eggs: 2, milk: 0.05, cheese: 30, tomatoes: 80 }, prepTip: null },
+  { id: "b3", name: "Творог со свежим бананом", type: "breakfast", ingredients: { cottage_cheese: 180, banana: 0.5 }, prepTip: null },
+  { id: "b4", name: "Яичница с тостами и огурцом", type: "breakfast", ingredients: { eggs: 2, bread: 0.2, cucumber: 80 }, prepTip: null },
+  { id: "b5", name: "Сырники с бананом", type: "breakfast", ingredients: { cottage_cheese: 200, eggs: 1, banana: 0.5 }, prepTip: "Замесить творожную массу с вечера." },
+  { id: "b6", name: "Тосты с яйцом и сыром", type: "breakfast", ingredients: { bread: 0.2, eggs: 2, cheese: 30 }, prepTip: null },
+  { id: "b7", name: "Овсяноблин с сыром и зеленью", type: "breakfast", ingredients: { oats: 40, eggs: 1, milk: 0.05, cheese: 30, greens: 0.1 }, prepTip: null },
+
+  { id: "l1", name: "Куриное филе с рисом и морковью", type: "lunch", ingredients: { chicken_fillet: 180, rice: 75, carrots: 50, onion: 40 }, prepTip: "Сварить рис сразу на 2-3 дня." },
+  { id: "l2", name: "Паста Болоньезе в томатном соусе", type: "lunch", ingredients: { pasta: 90, minced_meat: 160, tomato_paste: 80, onion: 40 }, prepTip: "Приготовить мясной соус болоньезе сразу на 2 порции." },
+  { id: "l3", name: "Гречка с тушеной курицей и луком", type: "lunch", ingredients: { buckwheat: 80, chicken_fillet: 170, carrots: 60, onion: 40 }, prepTip: "Отварить контейнер гречки на несколько дней." },
+  { id: "l4", name: "Паста с тунцом и томатами", type: "lunch", ingredients: { pasta: 90, tuna_canned: 0.5, tomatoes: 100, onion: 30 }, prepTip: null },
+  { id: "l5", name: "Куриный суп с рисом и зеленью", type: "lunch", ingredients: { chicken_fillet: 140, rice: 40, carrots: 50, onion: 30, greens: 0.2 }, prepTip: "Сварить кастрюлю куриного бульона на 2-3 дня." },
+  { id: "l6", name: "Гречневая каша с мясным фаршем по-купечески", type: "lunch", ingredients: { buckwheat: 80, minced_meat: 150, onion: 40, carrots: 40 }, prepTip: null },
+  { id: "l7", name: "Паста с шампиньонами и сыром", type: "lunch", ingredients: { pasta: 90, mushrooms: 120, cheese: 40, onion: 30 }, prepTip: null },
+
+  { id: "d1", name: "Запеченное куриное филе со свежим салатом", type: "dinner", ingredients: { chicken_fillet: 190, cucumber: 100, tomatoes: 100, greens: 0.2 }, prepTip: "Замариновать куриное филе в контейнере." },
+  { id: "d2", name: "Жареный рис с овощами и яйцом (стир-фрай)", type: "dinner", ingredients: { rice: 75, eggs: 2, carrots: 50, onion: 40, soy_sauce: 0.05 }, prepTip: "Использовать заранее сваренный охлажденный рис." },
+  { id: "d3", name: "Котлеты из фарша с салатом из огурцов", type: "dinner", ingredients: { minced_meat: 180, onion: 40, cucumber: 120, greens: 0.1 }, prepTip: "Сформировать котлеты заранее." },
+  { id: "d4", name: "Гречка с яйцом и свежими томатами", type: "dinner", ingredients: { buckwheat: 70, eggs: 2, tomatoes: 120, greens: 0.1 }, prepTip: null },
+  { id: "d5", name: "Теплый салат с тунцом, яйцом и огурцом", type: "dinner", ingredients: { tuna_canned: 0.5, eggs: 2, cucumber: 100, tomatoes: 80, greens: 0.2 }, prepTip: "Сварить яйца вкрутую заранее." },
+  { id: "d6", name: "Тушеные шампиньоны с рисом и соевым соусом", type: "dinner", ingredients: { mushrooms: 150, rice: 75, onion: 40, soy_sauce: 0.05 }, prepTip: null },
+  { id: "d7", name: "Омлет с курицей и зеленью", type: "dinner", ingredients: { eggs: 2, chicken_fillet: 120, greens: 0.2, milk: 0.05 }, prepTip: null }
+];
+
+let appState = {
+  config: { people: 2, days: 7, budget: 4800, mealsCount: 3, pantry: [], excluded: [] },
+  menu: [],
+  checkedShopItems: {}
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadSavedState();
+  initEvents();
+});
+
+function initEvents() {
+  document.querySelectorAll("#pantry-chips .chip").forEach(chip => {
+    chip.addEventListener("click", () => chip.classList.toggle("active"));
+  });
+
+  document.querySelectorAll("#exclude-chips .chip").forEach(chip => {
+    chip.addEventListener("click", () => chip.classList.toggle("active"));
+  });
+
+  document.getElementById("btn-generate").addEventListener("click", handleGenerate);
+  document.getElementById("btn-reset-plan").addEventListener("click", resetAll);
 }
-function parseHome(s){
- const out={}; list(s).forEach(x=>{const m=x.match(/^(.+?)\s+([\d.,]+)\s*(г|кг|мл|л|шт)?$/i);if(m)out[m[1].trim().toLowerCase()]={qty:parseFloat(m[2].replace(",",".")),unit:m[3]||"шт"}});
- return out;
+
+function handleGenerate() {
+  appState.config.people = parseInt(document.getElementById("people-count").value) || 2;
+  appState.config.days = parseInt(document.getElementById("days-count").value) || 7;
+  appState.config.budget = parseInt(document.getElementById("budget-input").value) || 4800;
+  appState.config.mealsCount = parseInt(document.getElementById("meals-count").value) || 3;
+
+  appState.config.pantry = Array.from(document.querySelectorAll("#pantry-chips .chip.active")).map(c => c.dataset.id);
+  appState.config.excluded = Array.from(document.querySelectorAll("#exclude-chips .chip.active")).map(c => c.dataset.id);
+
+  generateMenu();
+  saveState();
+  renderAll();
 }
-function score(r,likes,priority){let s=0;const hay=(r.name+" "+Object.keys(r.items).join(" ")).toLowerCase();likes.forEach(x=>{if(hay.includes(x))s+=5});if(priority==="budget")s+=(250-r.price)/20;if(priority==="protein")s+=r.p/4;return s}
-function pick(pool,index,likes,priority){
- return [...pool].sort((a,b)=>score(b,likes,priority)-score(a,likes,priority))[index%pool.length];
+
+function isDishAllowed(dish) {
+  for (const ingKey of Object.keys(dish.ingredients)) {
+    if (appState.config.excluded.includes(ingKey)) return false;
+    const ingData = INGREDIENTS[ingKey];
+    if (ingData && appState.config.excluded.includes(ingData.cat)) return false;
+  }
+  return true;
 }
-function generate(){
- const people=Math.max(1,Number(peopleEl.value)||1), days=Math.min(7,Math.max(1,Number(daysEl.value)||7)), budget=Math.max(0,Number(budgetEl.value)||0);
- const types=[...document.querySelectorAll(".mealtype:checked")].map(x=>x.value);
- if(!types.length){alert("Выбери хотя бы один приём пищи.");return}
- const bad=[...list(avoidEl.value),...list(allergyEl.value)], likes=list(likesEl.value), home=parseHome(homeEl.value), priority=priorityEl.value;
- const usable=RECIPES.filter(r=>!blocked(r,bad)); if(!usable.length){alert("После исключений не осталось блюд. Убери часть ограничений.");return}
- const menu=[], shop={}; let total=0,kcal=0,protein=0;
- for(let d=0;d<days;d++){
-   const meals=types.map((t,i)=>{let pool=usable.filter(r=>r.type===t);if(!pool.length)pool=usable;return pick(pool,d+i,likes,priority)});
-   let dayPrice=0; meals.forEach(r=>{dayPrice+=r.price*people;kcal+=r.kcal;protein+=r.p*people;Object.entries(r.items).forEach(([name,[qty,unit]])=>{const key=name;shop[key]??={qty:0,unit};shop[key].qty+=qty*people})});
-   total+=dayPrice;menu.push({day:d+1,meals,price:dayPrice});
- }
- // Roughly subtract home inventory when units are compatible.
- Object.entries(home).forEach(([name,h])=>{const key=Object.keys(shop).find(k=>k.replaceAll("_"," ")===name||k===name);if(key&&shop[key].unit===h.unit)shop[key].qty=Math.max(0,shop[key].qty-h.qty)});
- state={people,days,budget,types,menu,shop,total,kcal,protein,store:storeEl.value,cook:cookEl.value};
- localStorage.setItem("menuPlannerState",JSON.stringify(state)); render();
+
+function generateMenu() {
+  appState.menu = [];
+  const bPool = DISHES.filter(d => d.type === "breakfast" && isDishAllowed(d));
+  const lPool = DISHES.filter(d => d.type === "lunch" && isDishAllowed(d));
+  const dPool = DISHES.filter(d => d.type === "dinner" && isDishAllowed(d));
+
+  let lastB = null, lastL = null, lastD = null;
+
+  for (let i = 1; i <= appState.config.days; i++) {
+    const dayPlan = { day: i };
+
+    if (appState.config.mealsCount === 3) {
+      const bChoices = bPool.filter(d => d.id !== lastB) || bPool;
+      const bDish = bChoices[Math.floor(Math.random() * bChoices.length)] || bPool[0];
+      dayPlan.breakfast = bDish ? bDish.id : null;
+      lastB = dayPlan.breakfast;
+    }
+
+    const lChoices = lPool.filter(d => d.id !== lastL) || lPool;
+    const lDish = lChoices[Math.floor(Math.random() * lChoices.length)] || lPool[0];
+    dayPlan.lunch = lDish ? lDish.id : null;
+    lastL = dayPlan.lunch;
+
+    const dChoices = dPool.filter(d => d.id !== lastD) || dPool;
+    const dDish = dChoices[Math.floor(Math.random() * dChoices.length)] || dPool[0];
+    dayPlan.dinner = dDish ? dDish.id : null;
+    lastD = dayPlan.dinner;
+
+    appState.menu.push(dayPlan);
+  }
 }
-function render(){
- const s=state, diff=s.budget-s.total;
- resultSub.textContent=`${s.people} ${plural(s.people,"человек","человека","человек")} · ${s.days} ${plural(s.days,"день","дня","дней")} · ${s.store}`;
- stats.innerHTML=`<div class="stat"><strong>${Math.round(s.total).toLocaleString("ru-RU")} ₽</strong><span>расчёт меню</span></div><div class="stat"><strong class="${diff>=0?"ok":"bad"}">${Math.round(Math.abs(diff)).toLocaleString("ru-RU")} ₽</strong><span>${diff>=0?"останется":"сверх бюджета"}</span></div><div class="stat"><strong>${Math.round(s.kcal/s.days)}</strong><span>ккал/день, 1 чел.</span></div><div class="stat"><strong>${Math.round(s.protein/s.days)}</strong><span>г белка/день</span></div>`;
- tabs.innerHTML=s.menu.map((d,i)=>`<button class="tab ${i===0?"active":""}" onclick="showDay(${i})">День ${i+1}</button>`).join("");
- menu.innerHTML=s.menu.map((d,i)=>`<div class="day" id="day-${i}"><div class="daytop"><h3>День ${d.day}</h3><span class="price">${d.price} ₽</span></div>${d.meals.map((r,j)=>`<div class="meal"><div class="row"><div><div class="meal-title">${LABEL[r.type]} — ${r.name}</div><div class="meal-meta">${r.kcal} ккал · ${r.p} г белка · ${r.prep} мин · ${r.price*s.people} ₽</div></div><button class="secondary mini" onclick="replaceMeal(${i},${j})">Заменить</button></div></div>`).join("")}</div>`).join("");
- const entries=Object.entries(s.shop).filter(([,v])=>v.qty>0.01).sort((a,b)=>a[0].localeCompare(b[0],"ru"));
- shop.innerHTML=entries.map(([k,v])=>`<div class="item"><span>${k.replaceAll("_"," ")}<small>ориентировочно</small></span><b>${nice(v.qty)} ${v.unit}</b></div>`).join("")||"<div class='muted'>Всё необходимое уже есть дома.</div>";
- shoppingHint.textContent=`Магазин: ${s.store}. На следующем этапе вместо демонстрационных цен подключим источник реальных цен.`;
- renderBatch();
- ["result","shopping","batch"].forEach(id=>document.getElementById(id).classList.remove("hidden"));
- result.scrollIntoView({behavior:"smooth"});
+
+function replaceMeal(dayIndex, mealType) {
+  const currentDishId = appState.menu[dayIndex][mealType];
+  const pool = DISHES.filter(d => d.type === mealType && d.id !== currentDishId && isDishAllowed(d));
+  if (pool.length === 0) return;
+
+  const newDish = pool[Math.floor(Math.random() * pool.length)];
+  appState.menu[dayIndex][mealType] = newDish.id;
+
+  saveState();
+  renderAll();
 }
-function nice(n){return Number.isInteger(n)?n:String(Math.round(n*10)/10).replace(".",",")}
-function showDay(i){document.querySelectorAll(".tab").forEach((x,j)=>x.classList.toggle("active",i===j));document.getElementById("day-"+i)?.scrollIntoView({behavior:"smooth",block:"start"})}
-function renderBatch(){
- const s=state;
- if(s.cook==="daily"){batchText.innerHTML="<p>Ты выбрала готовить каждый день. Сайт пока не объединяет блюда в заготовки.</p>";return}
- const counts={};
- s.menu.forEach(d=>d.meals.forEach(r=>{counts[r.name]=(counts[r.name]||0)+1}));
- const repeats=Object.entries(counts).filter(([,n])=>n>1);
- batchText.innerHTML=repeats.length?`<p>Чтобы меньше готовить, повторяются блюда:</p><ul>${repeats.map(([n,c])=>`<li><b>${n}</b> — ${c} раза за неделю</li>`).join("")}</ul><p class="muted">На следующей версии добавим отдельный план «что приготовить в воскресенье/среду».</p>`:"<p>В этой комбинации меню повторов нет. На следующей версии сделаем полноценную оптимизацию заготовок.</p>";
+
+function calculateShopping() {
+  const totalNeeds = {};
+
+  appState.menu.forEach(day => {
+    [day.breakfast, day.lunch, day.dinner].filter(Boolean).forEach(id => {
+      const dish = DISHES.find(d => d.id === id);
+      if (!dish) return;
+      for (const [ingId, qty] of Object.entries(dish.ingredients)) {
+        totalNeeds[ingId] = (totalNeeds[ingId] || 0) + (qty * appState.config.people);
+      }
+    });
+  });
+
+  const shoppingList = [];
+  let totalCost = 0;
+
+  for (const [ingId, totalQty] of Object.entries(totalNeeds)) {
+    const ing = INGREDIENTS[ingId];
+    if (!ing || appState.config.pantry.includes(ingId)) continue;
+
+    const packsNeeded = Math.ceil(totalQty / ing.packQty);
+    const itemCost = packsNeeded * ing.price;
+    totalCost += itemCost;
+
+    shoppingList.push({
+      id: ingId,
+      name: ing.name,
+      category: ing.cat,
+      packs: packsNeeded,
+      cost: itemCost,
+      unit: ing.unit,
+      packQty: ing.packQty
+    });
+  }
+
+  return { shoppingList, totalCost };
 }
-function plural(n,a,b,c){n=Math.abs(n)%100;let x=n%10;return n>10&&n<20?c:x===1?a:(x>=2&&x<=4?b:c)}
-function replaceMeal(dayIndex,mealIndex){
- const old=state.menu[dayIndex].meals[mealIndex], bad=[...list(avoidEl.value),...list(allergyEl.value)], likes=list(likesEl.value);
- let pool=RECIPES.filter(r=>r.type===old.type && r.name!==old.name && !blocked(r,bad));
- if(!pool.length)return;
- pool.sort((a,b)=>score(b,likes,priorityEl.value)-score(a,likes,priorityEl.value));
- const next=pool[0];
- // Rebuild from scratch with the replacement so prices and shopping stay consistent.
- state.menu[dayIndex].meals[mealIndex]=next;
- recalcState();
- render();
+
+function renderAll() {
+  document.getElementById("result-area").classList.remove("hidden");
+  const { shoppingList, totalCost } = calculateShopping();
+
+  document.getElementById("total-cost").innerText = `${totalCost} ₽`;
+  const badgeEl = document.getElementById("budget-badge");
+  const warnEl = document.getElementById("budget-warning");
+
+  if (totalCost > appState.config.budget) {
+    badgeEl.innerText = "Превышение бюджета";
+    badgeEl.className = "badge badge-warn";
+    warnEl.classList.remove("hidden");
+  } else {
+    badgeEl.innerText = "В рамках бюджета";
+    badgeEl.className = "badge badge-accent";
+    warnEl.classList.add("hidden");
+  }
+
+  renderPrepTips();
+  renderDays();
+  renderShopping(shoppingList);
 }
-function recalcState(){
- const s=state, shop={}; let total=0,kcal=0,protein=0;
- s.menu.forEach(d=>{
-   d.price=0;
-   d.meals.forEach(r=>{
-     d.price+=r.price*s.people;kcal+=r.kcal*s.people;protein+=r.p*s.people;
-     Object.entries(r.items).forEach(([name,[qty,unit]])=>{shop[name]??={qty:0,unit};shop[name].qty+=qty*s.people});
-   }); total+=d.price;
- });
- const home=parseHome(homeEl.value);
- Object.entries(home).forEach(([name,h])=>{const key=Object.keys(shop).find(k=>k.replaceAll("_"," ")===name||k===name);if(key&&shop[key].unit===h.unit)shop[key].qty=Math.max(0,shop[key].qty-h.qty)});
- s.shop=shop;s.total=total;s.kcal=kcal;s.protein=protein;
- localStorage.setItem("menuPlannerState",JSON.stringify(s));
+
+function renderPrepTips() {
+  const prepListEl = document.getElementById("prep-list");
+  prepListEl.innerHTML = "";
+  const uniqueTips = new Set();
+
+  appState.menu.forEach(day => {
+    [day.breakfast, day.lunch, day.dinner].forEach(id => {
+      const dish = DISHES.find(d => d.id === id);
+      if (dish && dish.prepTip) uniqueTips.add(dish.prepTip);
+    });
+  });
+
+  if (uniqueTips.size === 0) {
+    uniqueTips.add("Все блюда готовятся быстро, предварительная варка/запекание не требуются.");
+  }
+
+  uniqueTips.forEach(tip => {
+    const li = document.createElement("li");
+    li.innerHTML = `<span>${tip}</span>`;
+    prepListEl.appendChild(li);
+  });
 }
-function resetApp(){localStorage.removeItem("menuPlannerState");location.reload()}
-const resultSub=document.getElementById("resultSub"),peopleEl=document.getElementById("people"),daysEl=document.getElementById("days"),budgetEl=document.getElementById("budget"),storeEl=document.getElementById("store"),avoidEl=document.getElementById("avoid"),allergyEl=document.getElementById("allergy"),likesEl=document.getElementById("likes"),homeEl=document.getElementById("home"),cookEl=document.getElementById("cook"),priorityEl=document.getElementById("priority"),stats=document.getElementById("stats"),tabs=document.getElementById("tabs"),menu=document.getElementById("menu"),shop=document.getElementById("shop"),shoppingHint=document.getElementById("shoppingHint"),batchText=document.getElementById("batchText"),result=document.getElementById("result");
-try{const saved=localStorage.getItem("menuPlannerState");if(saved){state=JSON.parse(saved);render()}}catch(e){}
+
+function renderDays() {
+  const container = document.getElementById("days-container");
+  container.innerHTML = "";
+  const labels = { breakfast: "Завтрак", lunch: "Обед", dinner: "Ужин" };
+
+  appState.menu.forEach((day, index) => {
+    const card = document.createElement("div");
+    card.className = "card day-card";
+
+    let mealsHtml = "";
+    const mealKeys = appState.config.mealsCount === 3 ? ["breakfast", "lunch", "dinner"] : ["lunch", "dinner"];
+
+    mealKeys.forEach(mKey => {
+      const dish = DISHES.find(d => d.id === day[mKey]);
+      if (!dish) return;
+
+      mealsHtml += `
+        <div class="meal-item">
+          <div class="meal-info">
+            <div class="meal-type">${labels[mKey]}</div>
+            <div class="meal-title">${dish.name}</div>
+          </div>
+          <button class="btn btn-secondary" onclick="replaceMeal(${index}, '${mKey}')">Заменить</button>
+        </div>
+      `;
+    });
+
+    card.innerHTML = `<div class="day-header">День ${day.day}</div>${mealsHtml}`;
+    container.appendChild(card);
+  });
+}
+
+function renderShopping(shoppingList) {
+  const container = document.getElementById("shopping-list-container");
+  container.innerHTML = "";
+
+  const grouped = {};
+  shoppingList.forEach(item => {
+    if (!grouped[item.category]) grouped[item.category] = [];
+    grouped[item.category].push(item);
+  });
+
+  let totalItems = shoppingList.length;
+  let checkedCount = 0;
+
+  for (const [catKey, items] of Object.entries(grouped)) {
+    const catDiv = document.createElement("div");
+    catDiv.className = "shop-category";
+
+    const title = document.createElement("div");
+    title.className = "shop-category-title";
+    title.textContent = CATEGORY_NAMES[catKey] || "Другое";
+    catDiv.appendChild(title);
+
+    items.forEach(item => {
+      const isChecked = !!appState.checkedShopItems[item.id];
+      if (isChecked) checkedCount++;
+
+      const row = document.createElement("label");
+      row.className = `shop-item ${isChecked ? 'checked' : ''}`;
+      row.innerHTML = `
+        <input type="checkbox" ${isChecked ? 'checked' : ''}>
+        <span>${item.name} — ${item.packs} уп. (~${item.cost} ₽)</span>
+      `;
+
+      row.querySelector("input").addEventListener("change", (e) => {
+        appState.checkedShopItems[item.id] = e.target.checked;
+        saveState();
+        renderShopping(shoppingList);
+      });
+
+      catDiv.appendChild(row);
+    });
+
+    container.appendChild(catDiv);
+  }
+
+  document.getElementById("shop-progress").innerText = `${checkedCount}/${totalItems}`;
+}
+
+function saveState() {
+  localStorage.setItem("menu_planner_state", JSON.stringify(appState));
+}
+
+function loadSavedState() {
+  const raw = localStorage.getItem("menu_planner_state");
+  if (!raw) return;
+
+  try {
+    appState = JSON.parse(raw);
+    document.getElementById("people-count").value = appState.config.people || 2;
+    document.getElementById("days-count").value = appState.config.days || 7;
+    document.getElementById("budget-input").value = appState.config.budget || 4800;
+    document.getElementById("meals-count").value = appState.config.mealsCount || 3;
+
+    document.querySelectorAll("#pantry-chips .chip").forEach(chip => {
+      if (appState.config.pantry.includes(chip.dataset.id)) chip.classList.add("active");
+    });
+
+    document.querySelectorAll("#exclude-chips .chip").forEach(chip => {
+      if (appState.config.excluded.includes(chip.dataset.id)) chip.classList.add("active");
+    });
+
+    if (appState.menu && appState.menu.length > 0) renderAll();
+  } catch (e) {
+    console.error("Ошибка чтения сохраненного состояния", e);
+  }
+}
+
+function resetAll() {
+  localStorage.removeItem("menu_planner_state");
+  location.reload();
+}
 </script>
 </body>
 </html>
