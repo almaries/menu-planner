@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#151515">
+<title>Меню — умный планировщик</title>
+<style>
+:root{--bg:#f5f3ef;--card:#fff;--text:#171717;--muted:#77716b;--line:#e6e1da;--accent:#171717;--soft:#eeebe5;--ok:#2d7450;--bad:#a03b35}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.app{max-width:900px;margin:auto;padding:18px 14px 80px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.logo{font-size:27px;font-weight:850;letter-spacing:-.5px}.tag{font-size:12px;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px;margin:12px 0;box-shadow:0 8px 30px #00000007}
+h1,h2,h3{margin:0 0 12px;letter-spacing:-.3px}h1{font-size:26px}h2{font-size:20px}h3{font-size:16px}
+.muted{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+label{display:block;font-weight:700;font-size:13px;margin:11px 0 6px}input,select,textarea{width:100%;padding:12px;border:1px solid #d8d2ca;border-radius:13px;background:#fff;font:inherit;outline:none}input:focus,select:focus,textarea:focus{border-color:#777}
+.chips{display:flex;flex-wrap:wrap;gap:7px}.chip{display:inline-flex;align-items:center;gap:6px;background:var(--soft);padding:9px 11px;border-radius:999px;cursor:pointer}.chip input{width:auto}
+button{width:100%;border:0;border-radius:14px;padding:13px 15px;background:var(--accent);color:#fff;font:inherit;font-weight:800;cursor:pointer;margin-top:14px}.secondary{background:var(--soft);color:var(--text)}.danger{background:#f4e7e5;color:#8b2e2a}
+.hidden{display:none}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.stat{background:var(--soft);padding:12px;border-radius:15px}.stat strong{display:block;font-size:18px}.stat span{font-size:12px;color:var(--muted)}
+.tabs{display:flex;gap:7px;overflow:auto;margin:12px 0}.tab{white-space:nowrap;border:1px solid var(--line);background:#fff;color:var(--text);padding:9px 12px;border-radius:999px;width:auto;margin:0}.tab.active{background:var(--accent);color:#fff}
+.day{border-top:1px solid var(--line);padding:17px 0}.day:first-child{border-top:0}.daytop{display:flex;justify-content:space-between;gap:10px}.meal{padding:10px 0}.meal-title{font-weight:800}.meal-meta{font-size:12px;color:var(--muted)}.price{font-weight:850}.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.mini{width:auto;margin:0;padding:8px 10px;font-size:12px}
+.item{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}.item:last-child{border-bottom:0}.item small{display:block;color:var(--muted)}
+.notice{padding:12px;border-radius:14px;background:#f1eee8;margin-top:12px}.ok{color:var(--ok)}.bad{color:var(--bad)}
+details{border-top:1px solid var(--line);padding:12px 0}summary{font-weight:800;cursor:pointer}
+footer{text-align:center;color:#aaa;font-size:11px;margin-top:25px}
+@media(max-width:650px){.grid,.grid3{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.app{padding-top:10px}}
+@media print{body{background:white}.card{box-shadow:none}.top,.tabs,#setup,button,footer{display:none!important}.hidden{display:block!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top"><div><div class="logo">Меню</div><div class="tag">умный планировщик бюджета</div></div><button class="secondary mini" onclick="resetApp()">Сбросить</button></header>
+
+  <section class="card" id="setup">
+    <h1>Соберём меню под тебя</h1>
+    <div class="muted">Пока это автономная версия: она работает прямо в браузере. Реальные цены магазинов подключим отдельным этапом.</div>
+    <div class="grid">
+      <div><label>Людей</label><input id="people" type="number" min="1" max="12" value="1"></div>
+      <div><label>Дней</label><input id="days" type="number" min="1" max="7" value="7"></div>
+      <div><label>Бюджет на всё, ₽</label><input id="budget" type="number" min="0" value="3500"></div>
+      <div><label>Магазин</label><select id="store"><option>Пятёрочка</option><option>Магнит</option><option>Дикси</option><option>Лента</option><option>Другой</option></select></div>
+    </div>
+
+    <label>Приёмы пищи</label>
+    <div class="chips">
+      <label class="chip"><input class="mealtype" type="checkbox" value="breakfast" checked> Завтрак</label>
+      <label class="chip"><input class="mealtype" type="checkbox" value="lunch" checked> Обед</label>
+      <label class="chip"><input class="mealtype" type="checkbox" value="dinner" checked> Ужин</label>
+    </div>
+
+    <div class="grid">
+      <div><label>Нелюбимые продукты</label><textarea id="avoid" rows="3" placeholder="грибы, овсянка, свинина"></textarea></div>
+      <div><label>Аллергии / строгие исключения</label><textarea id="allergy" rows="3" placeholder="арахис, молоко"></textarea></div>
+    </div>
+    <label>Что любишь</label><textarea id="likes" rows="2" placeholder="курица, рыба, рис, простые блюда"></textarea>
+
+    <label>Что уже есть дома</label><textarea id="home" rows="2" placeholder="яйца 6 шт, рис 500 г, морковь 2 шт"></textarea>
+
+    <div class="grid">
+      <div><label>Готовка</label><select id="cook"><option value="daily">Могу готовить каждый день</option><option value="few">Хочу готовить 2–3 раза в неделю</option><option value="batch">Хочу готовить большими партиями</option></select></div>
+      <div><label>Приоритет</label><select id="priority"><option value="budget">Минимальная цена</option><option value="balance">Баланс цены и разнообразия</option><option value="protein">Больше белка</option></select></div>
+    </div>
+    <button onclick="generate()">Составить меню</button>
+  </section>
+
+  <section class="card hidden" id="result">
+    <div class="row"><h2>Меню</h2><button class="secondary mini" onclick="window.print()">PDF / печать</button></div>
+    <div class="stats" id="stats"></div>
+    <div class="tabs" id="tabs"></div>
+    <div id="menu"></div>
+  </section>
+
+  <section class="card hidden" id="shopping">
+    <h2>Список покупок</h2>
+    <div class="muted" id="shoppingHint"></div>
+    <div id="shop"></div>
+  </section>
+
+  <section class="card hidden" id="batch">
+    <h2>Готовка партиями</h2>
+    <div id="batchText"></div>
+  </section>
+
+  <footer>Версия 1.0 · цены в этой версии демонстрационные · персональные данные никуда не отправляются</footer>
+</div>
+
+<script>
+const RECIPES=[
+{name:"Омлет с овощами",type:"breakfast",price:95,kcal:360,p:22,prep:10,items:{яйца:[2,"шт"],молоко:[100,"мл"],перец:[100,"г"],лук:[30,"г"]}},
+{name:"Творог с бананом",type:"breakfast",price:110,kcal:330,p:27,prep:5,items:{творог:[180,"г"],банан:[1,"шт"]}},
+{name:"Тост с яйцом и авокадо",type:"breakfast",price:125,kcal:410,p:18,prep:8,items:{хлеб:[2,"ломтика"],яйца:[2,"шт"],авокадо:[0.5,"шт"]}},
+{name:"Курица с рисом и овощами",type:"lunch",price:185,kcal:560,p:43,prep:30,items:{куриное_филе:[180,"г"],рис:[80,"г"],морковь:[70,"г"],лук:[30,"г"]}},
+{name:"Рыба с картофелем",type:"lunch",price:205,kcal:520,p:39,prep:30,items:{рыба:[200,"г"],картофель:[250,"г"],морковь:[50,"г"]}},
+{name:"Гречка с куриными котлетами",type:"lunch",price:175,kcal:540,p:41,prep:35,items:{куриный_фарш:[180,"г"],гречка:[80,"г"],лук:[40,"г"]}},
+{name:"Суп с курицей и овощами",type:"dinner",price:145,kcal:390,p:32,prep:40,items:{куриное_филе:[120,"г"],картофель:[150,"г"],морковь:[60,"г"],лук:[40,"г"]}},
+{name:"Тушёные овощи с яйцом",type:"dinner",price:120,kcal:350,p:20,prep:20,items:{яйца:[2,"шт"],кабачок:[180,"г"],морковь:[60,"г"],лук:[40,"г"]}},
+{name:"Паста с тунцом",type:"dinner",price:175,kcal:500,p:33,prep:20,items:{паста:[90,"г"],тунец:[100,"г"],томат:[100,"г"]}},
+{name:"Рис с тунцом и огурцом",type:"dinner",price:165,kcal:460,p:34,prep:15,items:{рис:[80,"г"],тунец:[100,"г"],огурец:[100,"г"]}}
+];
+const LABEL={breakfast:"Завтрак",lunch:"Обед",dinner:"Ужин"};
+let state=null;
+
+function list(s){return (s||"").toLowerCase().split(/[,;\n]+/).map(x=>x.trim()).filter(Boolean)}
+function blocked(r,bad){
+ const hay=(r.name+" "+Object.keys(r.items).join(" ")).toLowerCase();
+ return bad.some(x=>x && hay.includes(x));
+}
+function parseHome(s){
+ const out={}; list(s).forEach(x=>{const m=x.match(/^(.+?)\s+([\d.,]+)\s*(г|кг|мл|л|шт)?$/i);if(m)out[m[1].trim().toLowerCase()]={qty:parseFloat(m[2].replace(",",".")),unit:m[3]||"шт"}});
+ return out;
+}
+function score(r,likes,priority){let s=0;const hay=(r.name+" "+Object.keys(r.items).join(" ")).toLowerCase();likes.forEach(x=>{if(hay.includes(x))s+=5});if(priority==="budget")s+=(250-r.price)/20;if(priority==="protein")s+=r.p/4;return s}
+function pick(pool,index,likes,priority){
+ return [...pool].sort((a,b)=>score(b,likes,priority)-score(a,likes,priority))[index%pool.length];
+}
+function generate(){
+ const people=Math.max(1,Number(peopleEl.value)||1), days=Math.min(7,Math.max(1,Number(daysEl.value)||7)), budget=Math.max(0,Number(budgetEl.value)||0);
+ const types=[...document.querySelectorAll(".mealtype:checked")].map(x=>x.value);
+ if(!types.length){alert("Выбери хотя бы один приём пищи.");return}
+ const bad=[...list(avoidEl.value),...list(allergyEl.value)], likes=list(likesEl.value), home=parseHome(homeEl.value), priority=priorityEl.value;
+ const usable=RECIPES.filter(r=>!blocked(r,bad)); if(!usable.length){alert("После исключений не осталось блюд. Убери часть ограничений.");return}
+ const menu=[], shop={}; let total=0,kcal=0,protein=0;
+ for(let d=0;d<days;d++){
+   const meals=types.map((t,i)=>{let pool=usable.filter(r=>r.type===t);if(!pool.length)pool=usable;return pick(pool,d+i,likes,priority)});
+   let dayPrice=0; meals.forEach(r=>{dayPrice+=r.price*people;kcal+=r.kcal;protein+=r.p*people;Object.entries(r.items).forEach(([name,[qty,unit]])=>{const key=name;shop[key]??={qty:0,unit};shop[key].qty+=qty*people})});
+   total+=dayPrice;menu.push({day:d+1,meals,price:dayPrice});
+ }
+ // Roughly subtract home inventory when units are compatible.
+ Object.entries(home).forEach(([name,h])=>{const key=Object.keys(shop).find(k=>k.replaceAll("_"," ")===name||k===name);if(key&&shop[key].unit===h.unit)shop[key].qty=Math.max(0,shop[key].qty-h.qty)});
+ state={people,days,budget,types,menu,shop,total,kcal,protein,store:storeEl.value,cook:cookEl.value};
+ localStorage.setItem("menuPlannerState",JSON.stringify(state)); render();
+}
+function render(){
+ const s=state, diff=s.budget-s.total;
+ stats.innerHTML=`<div class="stat"><strong>${Math.round(s.total).toLocaleString("ru-RU")} ₽</strong><span>расчёт меню</span></div><div class="stat"><strong class="${diff>=0?"ok":"bad"}">${Math.round(Math.abs(diff)).toLocaleString("ru-RU")} ₽</strong><span>${diff>=0?"останется":"сверх бюджета"}</span></div><div class="stat"><strong>${Math.round(s.kcal/s.days)}</strong><span>ккал/день, 1 чел.</span></div><div class="stat"><strong>${Math.round(s.protein/s.days)}</strong><span>г белка/день</span></div>`;
+ tabs.innerHTML=s.menu.map((d,i)=>`<button class="tab ${i===0?"active":""}" onclick="showDay(${i})">День ${i+1}</button>`).join("");
+ menu.innerHTML=s.menu.map((d,i)=>`<div class="day" id="day-${i}"><div class="daytop"><h3>День ${d.day}</h3><span class="price">${d.price} ₽</span></div>${d.meals.map(r=>`<div class="meal"><div class="meal-title">${LABEL[r.type]} — ${r.name}</div><div class="meal-meta">${r.kcal} ккал · ${r.p} г белка · ${r.prep} мин · ${r.price*s.people} ₽</div></div>`).join("")}</div>`).join("");
+ const entries=Object.entries(s.shop).filter(([,v])=>v.qty>0.01);
+ shop.innerHTML=entries.map(([k,v])=>`<div class="item"><span>${k.replaceAll("_"," ")}<small>ориентировочно</small></span><b>${nice(v.qty)} ${v.unit}</b></div>`).join("")||"<div class='muted'>Всё необходимое уже есть дома.</div>";
+ shoppingHint.textContent=`Магазин: ${s.store}. На следующем этапе вместо демонстрационных цен подключим источник реальных цен.`;
+ renderBatch();
+ ["result","shopping","batch"].forEach(id=>document.getElementById(id).classList.remove("hidden"));
+ result.scrollIntoView({behavior:"smooth"});
+}
+function nice(n){return Number.isInteger(n)?n:String(Math.round(n*10)/10).replace(".",",")}
+function showDay(i){document.querySelectorAll(".tab").forEach((x,j)=>x.classList.toggle("active",i===j));document.getElementById("day-"+i)?.scrollIntoView({behavior:"smooth",block:"start"})}
+function renderBatch(){
+ const s=state;
+ if(s.cook==="daily"){batchText.innerHTML="<p>Ты выбрала готовить каждый день. Сайт пока не объединяет блюда в заготовки.</p>";return}
+ const counts={};
+ s.menu.forEach(d=>d.meals.forEach(r=>{counts[r.name]=(counts[r.name]||0)+1}));
+ const repeats=Object.entries(counts).filter(([,n])=>n>1);
+ batchText.innerHTML=repeats.length?`<p>Чтобы меньше готовить, повторяются блюда:</p><ul>${repeats.map(([n,c])=>`<li><b>${n}</b> — ${c} раза за неделю</li>`).join("")}</ul><p class="muted">На следующей версии добавим отдельный план «что приготовить в воскресенье/среду».</p>`:"<p>В этой комбинации меню повторов нет. На следующей версии сделаем полноценную оптимизацию заготовок.</p>";
+}
+function resetApp(){localStorage.removeItem("menuPlannerState");location.reload()}
+const peopleEl=document.getElementById("people"),daysEl=document.getElementById("days"),budgetEl=document.getElementById("budget"),storeEl=document.getElementById("store"),avoidEl=document.getElementById("avoid"),allergyEl=document.getElementById("allergy"),likesEl=document.getElementById("likes"),homeEl=document.getElementById("home"),cookEl=document.getElementById("cook"),priorityEl=document.getElementById("priority"),stats=document.getElementById("stats"),tabs=document.getElementById("tabs"),menu=document.getElementById("menu"),shop=document.getElementById("shop"),shoppingHint=document.getElementById("shoppingHint"),batchText=document.getElementById("batchText"),result=document.getElementById("result");
+try{const saved=localStorage.getItem("menuPlannerState");if(saved){state=JSON.parse(saved);render()}}catch(e){}
+</script>
+</body>
+</html>
